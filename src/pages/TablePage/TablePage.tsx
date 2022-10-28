@@ -1,38 +1,30 @@
-import {ButtonGroup} from "../../components/ButtonGroup/ButtonGroup";
-import {FILTER_OPTIONS, TABLE_HEADERS} from "./constants";
+import {INITIAL_ACTIVE_FILTER, INITIAL_SORT_KEYS, TABLE_HEADERS} from "./constants";
 import {Table} from "../../components/Table/Table"
-import {useEffect, useState} from "react";
-import {Button} from "../../components/Button/Button";
+import {useCallback, useEffect, useState} from "react";
 import {TButtonGroupOption} from "../../components/ButtonGroup/types";
 import './styles.css'
-import {BUTTON_COLOR, BUTTON_TXT} from "../../components/Button/constans";
 import {TUser} from "../../types/types";
+import {TablePageActions} from "./TablePageActions";
 
-const initialSortKeys = {balance: false, email: false}
-const initialActiveFilter = {
-  label: '',
-  value: ''
-}
 
 export const TablePage = () => {
   const [data, setData] = useState<TUser[]>([])
   const [tableData, setTableData] = useState<TUser[]>([])
-  const [activeFilter, setActiveFilter] = useState<TButtonGroupOption>(initialActiveFilter)
-  const [sortKeys, setSortKeys] = useState<{[key: string]: boolean}>(initialSortKeys)
-
-  const activeFilterHandler = (option: TButtonGroupOption) => {
-    const filteredArr = data.filter(item => item.isActive === option.status)
-    setTableData(filteredArr)
-    setActiveFilter(option)
-  }
+  const [activeFilter, setActiveFilter] = useState<TButtonGroupOption>(INITIAL_ACTIVE_FILTER)
+  const [sortKeys, setSortKeys] = useState<{ [key: string]: boolean }>(INITIAL_SORT_KEYS)
 
   const resetHandler = () => {
-    setActiveFilter(initialActiveFilter)
-    setSortKeys(initialSortKeys)
+    setActiveFilter(INITIAL_ACTIVE_FILTER)
+    setSortKeys(INITIAL_SORT_KEYS)
     setTableData(data)
   }
 
-  const sortHandler = (key: keyof TUser) => {
+  const activeFilterHandler = useCallback((option: TButtonGroupOption) => {
+    setTableData([...data.filter(item => item.isActive === option.status)])
+    setActiveFilter(option)
+  }, [data])
+
+  const sortHandler = useCallback((key: keyof TUser) => {
     let sortedArr: TUser[] = data
     if (activeFilter) {
       sortedArr = [...tableData]
@@ -40,19 +32,19 @@ export const TablePage = () => {
     if (sortKeys[key]) {
       sortedArr.sort((a, b) => a[key] > b[key] ? 1 : -1)
     } else {
-      sortedArr.sort((a, b) => a[key] > b[key] ? -1 : 1 )
+      sortedArr.sort((a, b) => a[key] > b[key] ? -1 : 1)
     }
     setSortKeys({...sortKeys, [key]: !sortKeys[key]})
     setTableData(sortedArr)
-  }
+  }, [data, sortKeys, tableData])
 
-  const fetchData = async() => {
-    try{
+  const fetchData = async () => {
+    try {
       const resp = await fetch('http://localhost:3001/data');
       const result = await resp.json();
       setData(result);
       setTableData(result)
-    }catch (e){
+    } catch (e) {
       console.error(e);
     }
   }
@@ -62,22 +54,15 @@ export const TablePage = () => {
 
   return (
     <div className="table-page">
-      <ButtonGroup
-        options={FILTER_OPTIONS}
-        onClick={activeFilterHandler}
-        active={activeFilter.value}
+      <TablePageActions
+        activeFilterHandler={activeFilterHandler}
+        activeFilter={activeFilter}
+        resetHandler={resetHandler}
       />
-      <Button
-        color={BUTTON_COLOR.DANGER}
-        onClick={resetHandler}
-      >
-        {BUTTON_TXT.RESET}
-      </Button>
-      <Table
+      <Table<TUser>
         headers={TABLE_HEADERS}
         data={tableData}
         sort={sortHandler}
-        activeFilter={activeFilter}
       />
     </div>
   )

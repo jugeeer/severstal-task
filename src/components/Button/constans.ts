@@ -4,5 +4,5 @@ export const BUTTON_COLOR = {
 }
 
 export const BUTTON_TXT = {
-  RESET: 'Reset'
+  RESET: 'Reset Filters'
 }

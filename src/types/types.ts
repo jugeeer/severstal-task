@@ -1,6 +1,6 @@
-export type TUser = {
-  id: number,
-  parentId: number,
+import {TBaseDataType} from "../components/Table/types";
+
+export interface TUser extends TBaseDataType{
   isActive: boolean,
   balance: string,
   name: string,

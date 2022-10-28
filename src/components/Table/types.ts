@@ -1,21 +1,30 @@
-import {TUser} from "../../types/types";
-import {TButtonGroupOption} from "../ButtonGroup/types";
-
-export type THeader = {
+export type THeader<T> = {
   label: string
-  value: keyof TUser
+  value: keyof T
+  dataKey: string
+  sortable: boolean
+  render?: (option: T) => string
 }
 
-export type TTable = {
-  headers: THeader[]
-  data: TUser[]
-  sort?: (key: keyof TUser) => void
-  activeFilter: TButtonGroupOption
+export type TTable<T> = {
+  headers: THeader<T>[]
+  data: T[]
+  sort?: (key: keyof T) => void
 }
 
-export type TTableRow = {
-  option: TUser,
-  data: TUser[]
+export type TTableRow<T> = {
+  headers: THeader<T>[]
+  option: T,
+  data: T[]
   expanded?: boolean
-  activeFilter: TButtonGroupOption
+}
+
+export type TTableHead<T> = {
+  header: THeader<T>
+  sort?: (key: keyof T) => void
+}
+
+export type TBaseDataType = {
+  id: string
+  parentId: string
 }

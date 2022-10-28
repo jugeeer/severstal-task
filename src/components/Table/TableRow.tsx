@@ -1,25 +1,17 @@
-import {useEffect, useState} from "react";
-import {TTableRow} from "./types";
-import {TUser} from "../../types/types";
+import {ReactNode, useMemo, useState} from "react";
+import {TBaseDataType, THeader, TTableRow} from "./types";
 import './table.row.css'
 
-export const TableRow = ({option, data, expanded, activeFilter}: TTableRow) => {
+export const TableRow = <T extends TBaseDataType>({option, data, expanded, headers}: TTableRow<T>) => {
   const [isExpand, setExpand] = useState<boolean>(false)
-  const [expandedData, setExpandedData] = useState<TUser[]>([])
 
   const clickHandler = () => {
     if (expandedData.length) setExpand(!isExpand)
   }
 
-  useEffect(() => {
-    setExpand(false)
-    let arr = data.filter((item) => item.parentId === option.id)
-    if (activeFilter.value) {
-      arr = arr.filter(item => item.isActive === activeFilter.status)
-    }
-    setExpandedData(arr)
-  }, [activeFilter])
-
+  const expandedData = useMemo(() => {
+    return data.filter(item => item.parentId === option.id)
+  }, [data])
 
   return (
     <>
@@ -27,21 +19,24 @@ export const TableRow = ({option, data, expanded, activeFilter}: TTableRow) => {
         onClick={clickHandler}
         className={`${expanded && 'expanded'} ${!!expandedData.length && 'cursor'} `}
       >
-        <td>
-          {!!expandedData.length && <div className='plus-minus'>{isExpand ? '-' : '+'}</div>}
-          {option.name}
-        </td>
-        <td>{option.balance}</td>
-        <td>{option.email}</td>
-        <td>{option.isActive ? 'Active' : 'Inactive'}</td>
+        {headers.map((header: THeader<T>, index) => {
+          const item = header.render ? header.render(option) : option[header.value] as ReactNode
+          if (index === 0) {
+            return <td>
+              {!!expandedData.length && <div className='plus-minus'>{isExpand ? '-' : '+'}</div>}
+              {`${item}`}
+            </td>
+          }
+          return <td>{item}</td>
+        })}
       </tr>
       {isExpand && expandedData.map(dataItem => {
         return <TableRow
-          key={dataItem.name}
+          key={dataItem.id}
+          headers={headers}
           option={dataItem}
           data={data}
           expanded={true}
-          activeFilter={activeFilter}
         />
       })}
     </>

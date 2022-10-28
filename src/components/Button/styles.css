@@ -1,0 +1,22 @@
+.button-default {
+    padding: 10px 25px;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 10%;
+}
+
+.button-default.primary {
+    background: #5468ff;
+    color: white;
+}
+
+.button-default.active {
+    background: #40a9ff;
+    color: white;
+}
+
+.button-default.danger {
+    color: white;
+    background: #d9363e;
+}

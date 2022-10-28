@@ -1,0 +1,17 @@
+.table-page {
+    display: flex;
+    flex-direction: column;
+    padding: 40px 50px;
+    align-items: center;
+    position: relative;
+}
+
+.table-page .danger {
+    position: absolute;
+    right: 50px;
+}
+
+.table-page .button-group {
+    margin-bottom: 50px;
+}
+

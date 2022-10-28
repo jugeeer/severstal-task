@@ -1,0 +1,13 @@
+.table{
+    width: 100%;
+}
+
+.table thead{
+    height: 50px;
+    background: lightgrey;
+}
+
+.table thead .cursor:hover {
+    cursor: pointer;
+    background: grey;
+}

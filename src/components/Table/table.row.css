@@ -1,0 +1,34 @@
+.table-row tr {
+    height: 40px;
+    text-align: center;
+}
+
+.table-row tr svg {
+    width: 20px;
+    height: 20px;
+}
+
+.table-row tr.expanded {
+    background: lightgrey;
+}
+
+.table-row tr {
+    position: relative;
+}
+
+.table-row tr .plus-minus {
+    position: absolute;
+    left: 20px
+}
+
+.table-row tr.expanded:hover {
+    background: gray;
+}
+
+.table-row tr:hover {
+    background: ghostwhite;
+}
+
+.table-row tr.cursor {
+    cursor: pointer;
+}

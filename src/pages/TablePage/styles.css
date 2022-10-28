@@ -1,0 +1,15 @@
+.table-page {
+    display: flex;
+    flex-direction: column;
+    padding: 40px 50px;
+    align-items: center;
+}
+
+.table-page_actions{
+    display: flex;
+    align-items: center;
+    margin-bottom: 50px;
+    width: 100%;
+    justify-content: space-between;
+}
+
